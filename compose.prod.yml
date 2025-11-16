@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: united_postgres_prod
+    env_file:
+      - ./.env.prod
+    volumes:
+      - postgres_data_prod_v2:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile.prod
+    container_name: united_auth_prod
+    env_file:
+      - ./auth-service/.env.prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             gunicorn --bind 0.0.0.0:8000 --workers 3 auth_project.wsgi:application"
+
+  blog-service:
+    build:
+      context: ./blog-service
+      dockerfile: Dockerfile.prod
+    container_name: united_blog_prod
+    env_file:
+      - ./blog-service/.env.prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - VITE_AUTH_API_URL=${VITE_AUTH_API_URL:-/api/auth}
+        - VITE_BLOG_API_URL=${VITE_BLOG_API_URL:-/api/blog}
+    container_name: united_frontend_prod
+    env_file:
+      - ./frontend/.env.prod
+    depends_on:
+      - auth-service
+      - blog-service
+    restart: always
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: united_nginx_prod
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-service
+      - blog-service
+      - frontend
+    restart: always
+
+volumes:
+  postgres_data_prod_v2:
