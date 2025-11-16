@@ -1,12 +1,12 @@
-# Environment files (sensitive data - NEVER commit these)
+# Environment files
 .env
 .env.local
 .env.*.local
 **/.env
-**/.env.dev
-**/.env.prod
 **/.env.local
 !**/.env.example
+!**/.env.dev
+!**/.env.prod
 .claude/
 # Python
 __pycache__/
