@@ -13,7 +13,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await blogApi.get('/api/posts/');
+      const response = await blogApi.get('/posts/');
       setPosts(response.data);
     } catch (err) {
       setError('Failed to fetch posts');

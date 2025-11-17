@@ -15,7 +15,7 @@ const PostDetail = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await blogApi.get(`/api/posts/${id}`);
+      const response = await blogApi.get(`/posts/${id}`);
       setPost(response.data);
     } catch (err) {
       if (err.response?.status === 404) {

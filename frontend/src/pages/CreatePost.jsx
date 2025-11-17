@@ -15,7 +15,7 @@ const CreatePost = () => {
     setLoading(true);
 
     try {
-      await blogApi.post('/api/posts/', { title, content });
+      await blogApi.post('/posts/', { title, content });
       navigate('/my-posts');
     } catch (err) {
       setError(

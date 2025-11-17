@@ -13,7 +13,7 @@ const MyPosts = () => {
 
   const fetchMyPosts = async () => {
     try {
-      const response = await blogApi.get('/api/posts/user/me');
+      const response = await blogApi.get('/posts/user/me');
       setPosts(response.data);
     } catch (err) {
       setError('Failed to fetch your posts');
@@ -28,7 +28,7 @@ const MyPosts = () => {
     }
 
     try {
-      await blogApi.delete(`/api/posts/${postId}`);
+      await blogApi.delete(`/posts/${postId}`);
       setPosts(posts.filter((post) => post.id !== postId));
     } catch (err) {
       setError('Failed to delete post');
