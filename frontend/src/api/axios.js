@@ -48,7 +48,7 @@ blogApi.interceptors.response.use(
           throw new Error('No refresh token');
         }
 
-        const response = await authApi.post('/api/token/refresh/', {
+        const response = await authApi.post('/token/refresh/', {
           refresh: refreshToken,
         });
 
