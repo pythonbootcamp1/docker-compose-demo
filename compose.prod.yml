@@ -62,7 +62,7 @@ services:
       dockerfile: Dockerfile
     container_name: united_nginx_prod
     ports:
-      - "80:80"
+      - "8888:80"
     depends_on:
       - auth-service
       - blog-service
